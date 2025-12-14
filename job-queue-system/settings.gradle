@@ -1,0 +1,5 @@
+rootProject.name = "job-queue-system"
+
+include("common")
+include("api-service")
+include("worker-service")
