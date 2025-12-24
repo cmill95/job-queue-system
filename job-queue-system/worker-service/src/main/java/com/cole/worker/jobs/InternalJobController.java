@@ -1,4 +1,4 @@
-package com.cole.api.jobs;
+package com.cole.worker.jobs;
 
 import com.cole.common.dto.GetJobResponse;
 import com.cole.common.dto.SubmitJobRequest;
@@ -7,12 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/jobs")
-public class JobController {
+@RequestMapping("/internal/jobs")
+public class InternalJobController {
 
-    private final JobService service;
+    private final WorkerJobService service;
 
-    public JobController(JobService service) {
+    public InternalJobController(WorkerJobService service) {
         this.service = service;
     }
 

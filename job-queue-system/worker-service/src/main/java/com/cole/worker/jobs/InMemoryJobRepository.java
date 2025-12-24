@@ -1,7 +1,8 @@
-package com.cole.api.jobs;
+package com.cole.worker.jobs;
 
 import com.cole.common.job.Job;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,5 +17,9 @@ public class InMemoryJobRepository {
 
     public Optional<Job> findById(String id) {
         return Optional.ofNullable(jobs.get(id));
+    }
+
+    public Collection<Job> findAll() {
+        return jobs.values();
     }
 }
