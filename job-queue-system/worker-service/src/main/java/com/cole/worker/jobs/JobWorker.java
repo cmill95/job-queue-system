@@ -14,26 +14,48 @@ public class JobWorker {
         this.service = service;
     }
 
-    // every 1 second, look for QUEUED jobs and process them
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 250)
     public void processQueuedJobs() {
         for (Job job : service.allJobs()) {
-            if (job.status() == JobStatus.QUEUED) {
-                // “Claim” it
-                service.markRunning(job.id());
+            if (job.status() != JobStatus.QUEUED) continue;
 
-                // Simulate some work
-                try {
-                    Thread.sleep(750);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
+            service.markRunning(job.id());
 
-                // Fake “result”
-                String result = "processed type=" + job.type() + " payload=" + job.payload();
+            try {
+                // Simulate/perform work based on job type
+                String result = execute(job);
+
+                // Add a little delay so RUNNING is observable
+                Thread.sleep(1500);
+
                 service.markSucceeded(job.id(), result);
+            } catch (Exception e) {
+                service.markFailed(job.id(), e.getMessage());
             }
         }
     }
+
+    private String execute(Job job) throws InterruptedException {
+        return switch (job.type()) {
+            case "echo" -> "echo payload=" + job.payload();
+
+            case "uppercase" -> {
+                Object msg = job.payload().get("msg");
+                if (msg == null) throw new IllegalArgumentException("payload.msg is required");
+                yield msg.toString().toUpperCase();
+            }
+
+            case "sleep" -> {
+                Object msObj = job.payload().getOrDefault("ms", 2000);
+                long ms = Long.parseLong(msObj.toString());
+                Thread.sleep(ms);
+                yield "slept " + ms + "ms";
+            }
+
+            case "fail" -> throw new RuntimeException("Intentional failure requested");
+
+            default -> throw new IllegalArgumentException("Unknown job type: " + job.type());
+        };
+    }
+
 }

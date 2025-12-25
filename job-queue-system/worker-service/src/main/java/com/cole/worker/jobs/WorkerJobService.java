@@ -49,6 +49,16 @@ public class WorkerJobService {
         ));
     }
 
+    public void markFailed(String id, String errorMessage) {
+        Job job = repo.findById(id).orElseThrow();
+        Instant now = Instant.now();
+        repo.save(new Job(
+                job.id(), job.type(), JobStatus.FAILED,
+                job.createdAt(), now, job.payload(),
+                null, errorMessage
+        ));
+    }
+
     public void markSucceeded(String id, String result) {
         Job job = repo.findById(id).orElseThrow();
         Instant now = Instant.now();
