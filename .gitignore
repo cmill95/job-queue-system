@@ -1,0 +1,16 @@
+# Gradle
+.gradle/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# OS / editor noise
+.DS_Store
+*.swp
+*.log
+
+# Environment files
+.env
