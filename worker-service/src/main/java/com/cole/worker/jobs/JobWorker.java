@@ -25,9 +25,6 @@ public class JobWorker {
                 // Simulate/perform work based on job type
                 String result = execute(job);
 
-                // Add a little delay so RUNNING is observable
-                Thread.sleep(1500);
-
                 service.markSucceeded(job.id(), result);
             } catch (Exception e) {
                 service.markFailed(job.id(), e.getMessage());
