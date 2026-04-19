@@ -1,7 +1,6 @@
 package com.cole.worker.jobs;
 
 import com.cole.common.job.Job;
-import com.cole.common.job.JobStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +15,7 @@ public class JobWorker {
 
     @Scheduled(fixedDelay = 250)
     public void processQueuedJobs() {
-        for (Job job : service.allJobs()) {
-            if (job.status() != JobStatus.QUEUED) continue;
-
+        for (Job job : service.findQueued()) {
             service.markRunning(job.id());
 
             try {
